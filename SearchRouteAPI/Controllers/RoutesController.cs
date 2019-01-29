@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 
@@ -17,15 +15,17 @@ namespace SearchRouteAPI.Controllers
         [HttpGet("{srcAirport}/{destAirport}")]
         public async Task<string> Get(string srcAirport, string destAirport)
         {
-            CancellationTokenSource cts = new CancellationTokenSource();
-
             SearchRoutes sr = new SearchRoutes(srcAirport, destAirport);
 
-            var routes = await sr.FindRoutes(srcAirport, "", cts.Token);
+            //check airport avialable
+            if (!await sr.IsAirportAvialable(srcAirport))
+                return $"{srcAirport} is not avialable";
 
-            cts.Cancel();
-        
-            return routes;
+            if (!await sr.IsAirportAvialable(destAirport))
+                return $"{destAirport} is not avialable";
+
+            var result = await sr.FindRoutes(srcAirport, String.Empty);
+            return result;
         }
 
     }

@@ -25,13 +25,13 @@ namespace SearchRouteAPI.Services
             }
         }
 
-        public static async Task<List<Airport>> GetAirports(string pattern, CancellationToken ct)
+        public static async Task<List<Airport>> GetAirports(string pattern)
         {
             string url = $"https://homework.appulate.com/api/Airport/search?pattern={pattern}";
             using (var client = new HttpClient())
             using (var request = new HttpRequestMessage(HttpMethod.Get, url))
             {
-                var response = await client.SendAsync(request, ct).ConfigureAwait(false);
+                var response = await client.SendAsync(request).ConfigureAwait(false);
                 var airoports = JsonConvert.DeserializeObject<List<Airport>>(await response.Content.ReadAsStringAsync());
                 return airoports;
             }

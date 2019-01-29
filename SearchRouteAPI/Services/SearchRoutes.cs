@@ -29,15 +29,17 @@ namespace SearchRouteAPI.Services
             result_string = _srcAirport;
         }
         
-        public async Task<string> FindRoutes(string srcAirport, string resultRoutes, CancellationToken ct)
+        public async Task<string> FindRoutes(string srcAirport, string resultRoutes)
         {
             //add srcAirport to checked list
             visited.Add(srcAirport);
 
             try
             {
+                //get results about destAirports
                 var results = JsonConvert.DeserializeObject<List<Route>>(await HTTPService.GetRoutes(srcAirport, cts.Token));
                 
+                //check results with searchable src and dest airports, is find - cancel any requests
                 foreach (var r in results)
                 {
                     if (r.destAirport == destAirport)
@@ -47,18 +49,21 @@ namespace SearchRouteAPI.Services
                         return result_string;
                     }
                 }
-
                 
+                //create new list src airports, compare with visited src airports
                 var srcList = new List<string>();
                 results.ForEach(r => {
+
+                    //@todo check avialable avialine
                     if (!visited.Contains(r.destAirport))
                         srcList.Add(r.destAirport);
                         
                 });
                 
-                var tasks = srcList.Select(s => FindRoutes(s, String.Concat(resultRoutes + " -> ", s), ct));
+                //new tasks list and start parallel all (recursive)
+                var tasks = srcList.Select(s => FindRoutes(s, String.Concat(resultRoutes + " -> ", s)));
+                await Task.WhenAll(tasks);
 
-                var sss = await Task.WhenAny(tasks);
             }
             catch (Exception ex)
             {
@@ -67,6 +72,18 @@ namespace SearchRouteAPI.Services
 
             return result_string;
         }
-        
+
+        public async Task<bool> IsAirportAvialable(string airport)
+        {
+            List<Airport> airports = await HTTPService.GetAirports(airport); 
+            foreach (var a in airports)
+            {
+                if(a.alias == airport)
+                    return true;
+            }
+            return false;
+        }
+
+
     }
 }
