@@ -71,7 +71,7 @@ namespace SearchRouteAPI.Services
             }
             catch (Exception ex)
             {
-                //Console.WriteLine(ex);
+                Console.WriteLine(ex);
             }
 
             return resultString;
@@ -79,7 +79,7 @@ namespace SearchRouteAPI.Services
 
         public async Task<bool> IsAirportAvialable(string airport)
         {
-            var airports = await HTTPService.GetAirports(airport, cts.Token); 
+            var airports = await HTTPService.GetAirports(airport); 
             foreach (var a in airports)
             {
                 if(a.Alias == airport)
@@ -90,7 +90,7 @@ namespace SearchRouteAPI.Services
 
         public async Task<bool> IsAirlineActive(string alias)
         {
-            var airlines = await HTTPService.GetAirlines(alias, cts.Token);
+            var airlines = await HTTPService.GetAirlines(alias);
             foreach (var a in airlines)
             {
                 if (a.Active)
