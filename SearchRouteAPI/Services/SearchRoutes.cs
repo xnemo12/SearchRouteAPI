@@ -13,72 +13,90 @@ namespace SearchRouteAPI.Services
     {
         private CancellationTokenSource cts;
 
-        private string srcAirport;
-        private string destAirport;
+        private string _srcAirport;
+        private string _destAirport;
+
+        //Search API visited airports list
         private List<string> visited;
 
-        private string result_string;
+        private string resultString;
         
-        public SearchRoutes(string _srcAirport, string _destAirport)
+
+        public SearchRoutes(string srcAirport, string destAirport)
         {
-            srcAirport = _srcAirport;
-            destAirport = _destAirport;
+            _srcAirport = srcAirport;
+            _destAirport = destAirport;
             cts = new CancellationTokenSource();
             visited = new List<string>();
 
-            result_string = _srcAirport;
+            resultString = _srcAirport;
         }
         
-        public async Task<string> FindRoutes(string srcAirport, string resultRoutes)
+        public async Task<string> FindRoutes(string _srcAirport, string resultRoutes)
         {
             //add srcAirport to checked list
-            visited.Add(srcAirport);
+            visited.Add(_srcAirport);
 
             try
             {
                 //get results about destAirports
-                var results = JsonConvert.DeserializeObject<List<Route>>(await HTTPService.GetRoutes(srcAirport, cts.Token));
+                List<Route> results = await HTTPService.GetRoutes(_srcAirport, cts.Token);
                 
-                //check results with searchable src and dest airports, is find - cancel any requests
-                foreach (var r in results)
+                if (results.Count > 0)
                 {
-                    if (r.destAirport == destAirport)
+                    //check results with searchable src and dest airports, is find - cancel any requests
+                    foreach (var r in results)
                     {
-                        cts.Cancel();
-                        result_string = String.Concat(result_string, resultRoutes, " -> ", r.destAirport);
-                        return result_string;
+                        //check airline is active
+                        //bool airlineActive = await IsAirlineActive(r.airline);
+                        //if (airlineActive)
+                        //    continue;
+
+                        if (r.DestAirport == _destAirport)
+                        {
+                            cts.Cancel();
+                            resultString = String.Concat(resultString, resultRoutes, " -> ", r.DestAirport);
+                            return resultString;
+                        }
                     }
+
+                    //create new list src airports, compare with visited src airports
+                    var srcList = new List<string>();
+                    results.ForEach(r => {
+                        if (!visited.Contains(r.DestAirport))
+                            srcList.Add(r.DestAirport);
+                    });
+
+                    //new tasks list and start parallel all (recursive)
+                    var tasks = srcList.Select(s => FindRoutes(s, String.Concat(resultRoutes + " -> ", s)));
+                    await Task.WhenAll(tasks);
                 }
-                
-                //create new list src airports, compare with visited src airports
-                var srcList = new List<string>();
-                results.ForEach(r => {
-
-                    //@todo check avialable avialine
-                    if (!visited.Contains(r.destAirport))
-                        srcList.Add(r.destAirport);
-                        
-                });
-                
-                //new tasks list and start parallel all (recursive)
-                var tasks = srcList.Select(s => FindRoutes(s, String.Concat(resultRoutes + " -> ", s)));
-                await Task.WhenAll(tasks);
-
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.Message);
+                Console.WriteLine(ex);
             }
 
-            return result_string;
+            return resultString;
         }
 
         public async Task<bool> IsAirportAvialable(string airport)
         {
-            List<Airport> airports = await HTTPService.GetAirports(airport); 
+            var airports = await HTTPService.GetAirports(airport, cts.Token); 
             foreach (var a in airports)
             {
-                if(a.alias == airport)
+                if(a.Alias == airport)
+                    return true;
+            }
+            return false;
+        }
+
+        public async Task<bool> IsAirlineActive(string alias)
+        {
+            var airlines = await HTTPService.GetAirlines(alias, cts.Token);
+            foreach (var a in airlines)
+            {
+                if (a.Active)
                     return true;
             }
             return false;
