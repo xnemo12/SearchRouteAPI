@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Newtonsoft.Json;
 
 using SearchRouteAPI.Models;
 
@@ -48,11 +47,9 @@ namespace SearchRouteAPI.Services
                     foreach (var r in results)
                     {
                         //check airline is active
-                        //bool airlineActive = await IsAirlineActive(r.airline);
-                        //if (airlineActive)
-                        //    continue;
-
-                        if (r.DestAirport == _destAirport)
+                        bool airlineActive = await IsAirlineActive(r.Airline);
+                        
+                        if (r.DestAirport == _destAirport && airlineActive)
                         {
                             cts.Cancel();
                             resultString = String.Concat(resultString, resultRoutes, " -> ", r.DestAirport);
@@ -74,7 +71,7 @@ namespace SearchRouteAPI.Services
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex);
+                //Console.WriteLine(ex);
             }
 
             return resultString;
