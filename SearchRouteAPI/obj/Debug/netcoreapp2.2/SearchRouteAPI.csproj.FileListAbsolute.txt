@@ -1,0 +1,14 @@
+C:\Users\User\source\repos\SearchRouteAPI\SearchRouteAPI\bin\Debug\netcoreapp2.2\SearchRouteAPI.deps.json
+C:\Users\User\source\repos\SearchRouteAPI\SearchRouteAPI\bin\Debug\netcoreapp2.2\SearchRouteAPI.runtimeconfig.json
+C:\Users\User\source\repos\SearchRouteAPI\SearchRouteAPI\bin\Debug\netcoreapp2.2\SearchRouteAPI.runtimeconfig.dev.json
+C:\Users\User\source\repos\SearchRouteAPI\SearchRouteAPI\bin\Debug\netcoreapp2.2\SearchRouteAPI.dll
+C:\Users\User\source\repos\SearchRouteAPI\SearchRouteAPI\bin\Debug\netcoreapp2.2\SearchRouteAPI.pdb
+C:\Users\User\source\repos\SearchRouteAPI\SearchRouteAPI\obj\Debug\netcoreapp2.2\SearchRouteAPI.csprojAssemblyReference.cache
+C:\Users\User\source\repos\SearchRouteAPI\SearchRouteAPI\obj\Debug\netcoreapp2.2\SearchRouteAPI.csproj.CoreCompileInputs.cache
+C:\Users\User\source\repos\SearchRouteAPI\SearchRouteAPI\obj\Debug\netcoreapp2.2\SearchRouteAPI.RazorAssemblyInfo.cache
+C:\Users\User\source\repos\SearchRouteAPI\SearchRouteAPI\obj\Debug\netcoreapp2.2\SearchRouteAPI.RazorAssemblyInfo.cs
+C:\Users\User\source\repos\SearchRouteAPI\SearchRouteAPI\obj\Debug\netcoreapp2.2\SearchRouteAPI.AssemblyInfoInputs.cache
+C:\Users\User\source\repos\SearchRouteAPI\SearchRouteAPI\obj\Debug\netcoreapp2.2\SearchRouteAPI.AssemblyInfo.cs
+C:\Users\User\source\repos\SearchRouteAPI\SearchRouteAPI\obj\Debug\netcoreapp2.2\SearchRouteAPI.RazorTargetAssemblyInfo.cache
+C:\Users\User\source\repos\SearchRouteAPI\SearchRouteAPI\obj\Debug\netcoreapp2.2\SearchRouteAPI.dll
+C:\Users\User\source\repos\SearchRouteAPI\SearchRouteAPI\obj\Debug\netcoreapp2.2\SearchRouteAPI.pdb
